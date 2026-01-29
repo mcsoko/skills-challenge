@@ -3,14 +3,14 @@ provider "minecraft" {
   password = "terraform"
 }
 
-resource "minecraft_block" "diamond" {
-  material = "minecraft:diamond_block"
-  position = {
-    x = 0
-    y = 97
-    z = 0
-  }
-}
+# resource "minecraft_block" "diamond" {
+#   material = "minecraft:diamond_block"
+#   position = {
+#     x = 0
+#     y = 97
+#     z = 0
+#   }
+# }
 
 
 
