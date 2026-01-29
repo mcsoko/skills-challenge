@@ -55,7 +55,7 @@ provider "aws" {
 }
 ```
 Describe a resource as code
-```
+```terraform
 resource "aws_s3_bucket" "this" {
   bucket = "my-skills-challenge-bucket-wk1"
   tags = {
