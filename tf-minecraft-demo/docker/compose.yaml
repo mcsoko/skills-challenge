@@ -1,0 +1,71 @@
+services:
+  mc:
+    image: itzg/minecraft-server:latest
+    container_name: mc
+    # Entrypoint: Wipe player data every boot for a fresh demo feel
+    entrypoint: >
+      /bin/sh -c "
+      echo '🧹 Wiping player data...';
+      rm -rf /data/world/playerdata;
+      /start"
+    ports:
+      - "25565:25565"
+      - "25575:25575"
+    environment:
+      EULA: "TRUE"
+      MODE: "creative"
+      OPS: "mikesoko"
+      DIFFICULTY: "peaceful"
+      
+      # LEVEL TYPE
+      LEVEL_TYPE: "flat"
+      
+      # 1.21 JSON Format for "Raised Floor" (Bedrock + 18 Dirt + Grass)
+      # This sets the ground level to Y=19 so you stand on Y=20.
+      GENERATOR_SETTINGS: '{"layers":[{"block":"minecraft:bedrock","height":1},{"block":"minecraft:dirt","height":18},{"block":"minecraft:grass_block","height":1}],"biome":"minecraft:plains"}'
+      
+      GENERATE_STRUCTURES: "false"
+      ALLOW_FLIGHT: "true"
+      
+      ENABLE_RCON: "true"
+      RCON_PASSWORD: "terraform"
+      RCON_PORT: "25575"
+    restart: unless-stopped
+
+  # We don't need the RCON service anymore because the world generation 
+  # solves the problem naturally!
+
+  rcon:
+    image: itzg/rcon:latest
+    container_name: mc-rcon
+    depends_on:
+      - mc
+    environment:
+      RCON_HOST: mc
+      RCON_PORT: 25575
+      RCON_PASSWORD: terraform
+    entrypoint: ["/bin/sh", "-c"]
+    # 3. The Simplified Script
+    # No loops. No waiting for players. No building blocks.
+    # Just setting the global rules once.
+    command: |
+      echo "Waiting for Server..."
+      until rcon-cli "list" >/dev/null 2>&1; do sleep 2; done
+      
+      echo "Server ready. Setting spawn rules..."
+      
+      # Set the world spawn to our specific coordinates
+      rcon-cli "setworldspawn 0 20 -120"
+      
+      # Remove the random "fuzz" so you land on the EXACT block
+      rcon-cli "gamerule spawnRadius 0"
+      
+      # Visual cleanup
+      rcon-cli "gamerule doDaylightCycle false"
+      rcon-cli "time set day"
+      rcon-cli "weather clear"
+      
+      echo "✅ Demo World Configured."
+      # Exit cleanly (or sleep if you want logs to stay open)
+      sleep infinity
+    restart: unless-stopped
