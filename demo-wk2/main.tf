@@ -49,9 +49,9 @@ data "http" "endpoint" {
 
 }
 
-data "vault_generic_secret" "example" {
-  path = "secret/foo"
-}
+# data "vault_generic_secret" "example" {
+#   path = "secret/foo"
+# }
 
 
 #construct the map of az-subnet from data sources
@@ -189,8 +189,4 @@ module "website_s3_bucket" {
     Terraform   = "true"
     Environment = "dev"
   }
-}
-
-output "test" {
-  value = var.app_secret
 }

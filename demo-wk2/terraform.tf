@@ -20,10 +20,10 @@ terraform {
 
   required_version = "~> 1.2"
 
-  # backend "s3" {
-  #   bucket       = "soko-demo-terraform-state-2026"
-  #   key          = "tf-state/terraform.tfstate"
-  #   region       = "us-east-2"
-  #   use_lockfile = true # The new v1.12+ best practice
-  # }
+  backend "s3" {
+    bucket       = "soko-demo-terraform-state-2026"
+    key          = "tf-state/terraform.tfstate"
+    region       = "us-east-2"
+    use_lockfile = true # The new v1.12+ best practice
+  }
 }
